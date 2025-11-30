@@ -1,0 +1,202 @@
+=============================================================================
+📊 PROMETHEUS & GRAFANA МОНИТОРИНГ - ШПАРГАЛКА КОМАНД
+=============================================================================
+
+🚀 БЫСТРЫЙ СТАРТ
+----------------
+# 1. Установить зависимости
+pip install -r requirements.txt
+
+# 2. Запустить все сервисы (FastAPI + Prometheus + Grafana)
+docker-compose up -d
+
+# 3. Проверить статус
+docker-compose ps
+
+# 4. Открыть интерфейсы
+FastAPI:    http://localhost:8001
+Метрики:    http://localhost:8001/metrics
+Prometheus: http://localhost:9090
+Grafana:    http://localhost:3000 (admin/admin)
+
+
+📈 PROMETHEUS
+-------------
+# Открыть Prometheus UI
+http://localhost:9090
+
+# Проверить targets (должен быть UP)
+http://localhost:9090/targets
+
+# Примеры PromQL запросов:
+- Все запросы: sum(http_requests_total)
+- RPS: rate(http_requests_total[5m])
+- P95 latency: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
+- Память: memory_usage_bytes{type="rss"}
+- Аномалии: sum(anomalies_detected_total)
+
+
+📊 GRAFANA
+----------
+# Открыть Grafana
+http://localhost:3000
+
+# Логин/пароль
+admin / admin
+
+# Дашборд
+Автоматически загружается: "FastAPI Log Analyzer - Мониторинг"
+
+# Проверить datasource
+Configuration → Data Sources → Prometheus → Test
+
+
+🐳 DOCKER КОМАНДЫ
+-----------------
+# Запустить всё
+docker-compose up -d
+
+# Остановить всё
+docker-compose down
+
+# Остановить и удалить volumes (данные Prometheus и Grafana)
+docker-compose down -v
+
+# Перезапустить один сервис
+docker-compose restart fastapi-app
+docker-compose restart prometheus
+docker-compose restart grafana
+
+# Посмотреть логи
+docker logs fastapi-log-analyzer
+docker logs prometheus
+docker logs grafana
+
+# Посмотреть логи в реальном времени
+docker logs -f fastapi-log-analyzer
+
+# Зайти внутрь контейнера
+docker exec -it fastapi-log-analyzer bash
+docker exec -it prometheus sh
+docker exec -it grafana bash
+
+
+🔍 ПРОВЕРКА МЕТРИК
+------------------
+# Локально (без Docker)
+python main.py
+# Затем откройте http://localhost:8001/metrics
+
+# В Docker
+docker-compose up -d
+curl http://localhost:8001/metrics
+
+# Проверить конкретную метрику
+curl http://localhost:8001/metrics | grep log_records_processed_total
+curl http://localhost:8001/metrics | grep memory_usage_bytes
+
+
+🛠️ TROUBLESHOOTING
+------------------
+# Prometheus не видит FastAPI
+docker-compose ps                          # Проверить статус
+docker network ls                          # Проверить сети
+docker logs prometheus                     # Посмотреть логи
+
+# Перезагрузить конфигурацию Prometheus (без перезапуска)
+curl -X POST http://localhost:9090/-/reload
+
+# Grafana не показывает данные
+# 1. Проверить datasource: http://localhost:3000/datasources
+# 2. Test connection
+# 3. Проверить временной диапазон (top right)
+
+# Очистить всё и начать заново
+docker-compose down -v
+docker-compose up -d
+
+
+📊 ПОЛЕЗНЫЕ ЗАПРОСЫ PROMETHEUS
+------------------------------
+# HTTP метрики
+http_requests_total                                    # Все запросы
+rate(http_requests_total[5m])                         # RPS
+sum(rate(http_requests_total{status=~"5.."}[5m]))   # Errors per second
+
+# Latency
+histogram_quantile(0.50, rate(http_request_duration_seconds_bucket[5m]))  # p50
+histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))  # p95
+histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m]))  # p99
+
+# ML метрики
+rate(log_analysis_duration_seconds_sum[5m]) / rate(log_analysis_duration_seconds_count[5m])  # Avg time
+sum(log_records_processed_total)                                                               # Total records
+increase(anomalies_detected_total[1h])                                                         # Anomalies per hour
+
+# Системные метрики
+memory_usage_bytes{type="rss"}                        # Physical memory
+memory_usage_bytes{type="vms"}                        # Virtual memory
+active_websocket_connections                          # WebSocket count
+
+# По моделям
+sum by (model_type) (log_records_processed_total)     # Records by model
+sum by (model_type) (anomalies_detected_total)        # Anomalies by model
+
+
+🔧 НАСТРОЙКА
+------------
+# Изменить пароль Grafana
+# В docker-compose.yml:
+- GF_SECURITY_ADMIN_PASSWORD=NEW_PASSWORD
+
+# Изменить retention time Prometheus
+# В docker-compose.yml (command):
+'--storage.tsdb.retention.time=7d'  # Вместо 30d
+
+# Изменить scrape interval
+# В prometheus.yml:
+scrape_interval: 30s  # Вместо 15s
+
+
+📝 ФАЙЛЫ КОНФИГУРАЦИИ
+---------------------
+docker-compose.yml                                # Оркестрация
+prometheus.yml                                    # Конфигурация Prometheus
+grafana/provisioning/datasources/prometheus.yml  # Datasource
+grafana/provisioning/dashboards/default.yml      # Dashboard provider
+grafana/dashboards/logs-analysis.json            # Дашборд
+
+
+📖 ДОКУМЕНТАЦИЯ
+---------------
+MONITORING_GUIDE.md         # Полное руководство
+MONITORING_QUICKSTART.md    # Быстрый старт
+MONITORING_CHANGES.md       # Список изменений
+MONITORING_COMMANDS.txt     # Этот файл
+
+
+✅ ТЕСТИРОВАНИЕ
+---------------
+1. docker-compose up -d
+2. Откройте http://localhost:8001
+3. Загрузите тестовый ZIP файл
+4. Откройте Grafana http://localhost:3000
+5. Наблюдайте за обновлением метрик в реальном времени
+6. Проверьте все панели дашборда
+
+
+🎉 ГОТОВО!
+----------
+Система мониторинга настроена и готова к использованию!
+
+Основные URL:
+- FastAPI:    http://localhost:8001
+- Метрики:    http://localhost:8001/metrics
+- Prometheus: http://localhost:9090
+- Grafana:    http://localhost:3000
+
+Логин Grafana: admin / admin
+
+=============================================================================
+
+
