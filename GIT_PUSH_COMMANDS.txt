@@ -1,0 +1,57 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    КОМАНДЫ ДЛЯ PUSH НА GITHUB
+═══════════════════════════════════════════════════════════════════════════════
+
+Выполните эти команды в PowerShell:
+
+1. Перейдите в папку проекта:
+   cd D:\Downloads\FASTAPIGITPROJECT
+
+2. Инициализируйте Git репозиторий:
+   git init
+
+3. Добавьте все файлы:
+   git add .
+
+4. Создайте первый коммит:
+   git commit -m "Initial commit: Log Analyzer with ML"
+
+5. Переименуйте ветку в main:
+   git branch -M main
+
+6. Добавьте remote репозиторий:
+   git remote add origin https://github.com/hackathonsrus/Atomic_r2_negative_173.git
+
+7. Запушьте код:
+   git push -u origin main
+
+═══════════════════════════════════════════════════════════════════════════════
+
+ВСЕ КОМАНДЫ ОДНОЙ СТРОКОЙ:
+
+cd D:\Downloads\FASTAPIGITPROJECT && git init && git add . && git commit -m "Initial commit: Log Analyzer with ML" && git branch -M main && git remote add origin https://github.com/hackathonsrus/Atomic_r2_negative_173.git && git push -u origin main
+
+═══════════════════════════════════════════════════════════════════════════════
+
+ЕСЛИ УЖЕ ЕСТЬ .git ПАПКА:
+
+Если репозиторий уже инициализирован, используйте только эти команды:
+
+   git add .
+   git commit -m "Update: Added Docker support and improved README"
+   git remote add origin https://github.com/hackathonsrus/Atomic_r2_negative_173.git
+   git branch -M main
+   git push -u origin main
+
+═══════════════════════════════════════════════════════════════════════════════
+
+ЕСЛИ REMOTE УЖЕ СУЩЕСТВУЕТ:
+
+Если видите ошибку "remote origin already exists", сначала удалите старый:
+
+   git remote remove origin
+   git remote add origin https://github.com/hackathonsrus/Atomic_r2_negative_173.git
+   git push -u origin main
+
+═══════════════════════════════════════════════════════════════════════════════
+

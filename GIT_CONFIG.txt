@@ -1,0 +1,33 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    НАСТРОЙКА GIT - ВЫПОЛНИТЕ ЭТИ КОМАНДЫ
+═══════════════════════════════════════════════════════════════════════════════
+
+Скопируйте и выполните в PowerShell:
+
+1. Настройка email:
+   git config --global user.email "danik160204@gmail.com"
+
+2. Настройка имени:
+   git config --global user.name "R^2 negative"
+
+3. Проверка настроек:
+   git config --list
+
+═══════════════════════════════════════════════════════════════════════════════
+
+ЗАТЕМ ПОВТОРИТЕ КОМАНДЫ COMMIT И PUSH:
+
+   git add .
+   git commit -m "Initial commit: ML-powered Log Analyzer"
+   git branch -M main
+   git remote add origin https://github.com/hackathonsrus/Atomic_r2_negative_173.git
+   git push -u origin main
+
+═══════════════════════════════════════════════════════════════════════════════
+
+ВСЕ КОМАНДЫ ОДНОЙ СТРОКОЙ:
+
+git config --global user.email "danik160204@gmail.com"; git config --global user.name "R^2 negative"; git add .; git commit -m "Initial commit: ML-powered Log Analyzer"; git branch -M main; git remote add origin https://github.com/hackathonsrus/Atomic_r2_negative_173.git; git push -u origin main
+
+═══════════════════════════════════════════════════════════════════════════════
+
